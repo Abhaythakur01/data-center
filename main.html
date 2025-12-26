@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Data Center Construction Flow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            transform: translateX(-50%);
+        }
+
+        .phase {
+            margin-bottom: 60px;
+        }
+
+        .phase-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .phase-title {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 0 auto;
+            max-width: 1200px;
+        }
+
+        .step {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .step:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .step-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 12px;
+            margin-top: 10px;
+        }
+
+        .step-content {
+            color: #b0b0b0;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .step-content ul {
+            list-style: none;
+            margin-top: 8px;
+        }
+
+        .step-content li {
+            padding-left: 20px;
+            position: relative;
+            margin-bottom: 6px;
+        }
+
+        .step-content li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .suppliers {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.85rem;
+            color: #888;
+            font-style: italic;
+        }
+
+        .stats-section {
+            margin-top: 80px;
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+        }
+
+        .stats-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 40px;
+            color: #fff;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #b0b0b0;
+        }
+
+        @media (max-width: 768px) {
+            .steps {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .phase-title {
+                font-size: 1.2rem;
+                padding: 12px 30px;
+            }
+
+            .timeline::before {
+                left: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏗️ Let's Build Our Own Data Center</h1>
+
+        <div class="timeline">
+            <!-- Phase 1: Foundation Components -->
+            <div class="phase">
+                <div class="phase-header">
+                    <div class="phase-title">Phase 1: Foundation Components</div>
+                </div>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Silicon Wafers</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>Purify sand to 99.9999999%</li>
+                                <li>Grow cylindrical crystals</li>
+                                <li>Slice into thin wafers</li>
+                            </ul>
+                            <div class="suppliers">Shin-Etsu, SUMCO</div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Chip Fabrication</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>80+ billion transistors via photolithography</li>
+                                <li>4nm precision in cleanrooms</li>
+                                <li>$150M EUV machines</li>
+                            </ul>
+                            <div class="suppliers">TSMC, Samsung, Intel</div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-title">GPU Manufacturing</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>2,000 trillion ops/second</li>
+                                <li>Tensor cores for AI</li>
+                                <li>Parallel matrix multiplication</li>
+                            </ul>
+                            <div class="suppliers">NVIDIA H100, AMD, Intel</div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-title">Chip Packaging</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>Protective housing</li>
+                                <li>Gold wire connections</li>
+                                <li>Heat spreaders attached</li>
+                            </ul>
+                            <div class="suppliers">ASE, Amkor</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase 2: Computing Infrastructure -->
+            <div class="phase">
+                <div class="phase-header">
+                    <div class="phase-title">Phase 2: Computing Infrastructure</div>
+                </div>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">5</div>
+                        <div class="step-title">High Bandwidth Memory</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>3+ TB/second transfer speed</li>
+                                <li>350+ GB model storage</li>
+                                <li>Rapid GPU data access</li>
+                            </ul>
+                            <div class="suppliers">SK Hynix, Micron, Samsung</div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">6</div>
+                        <div class="step-title">High-Speed Storage</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>7 GB/second SSDs</li>
+                                <li>Terabytes of training data</li>
+                                <li>Continuous streaming</li>
+                            </ul>
+                            <div class="suppliers">Western Digital, Samsung</div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">7</div>
+                        <div class="step-title">Server Assembly</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>8x H100 GPUs ($200K)</li>
+                                <li>2 CPUs, 2TB RAM, 30TB storage</li>
+                                <li>24/7 redundant operation</li>
+                            </ul>
+                            <div class="suppliers">Dell, HPE, Supermicro</div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">8</div>
+                        <div class="step-title">Server Racks</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>40+ servers per rack</li>
+                                <li>2+ tons per rack</li>
+                                <li>Structured airflow channels</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase 3: Networking -->
+            <div class="phase">
+                <div class="phase-header">
+                    <div class="phase-title">Phase 3: Networking</div>
+                </div>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">9</div>
+                        <div class="step-title">Network Switches</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>100-800 Gbps capacity</li>
+                                <li>Sub-microsecond latency</li>
+                                <li>Route 40,000 GPU connections</li>
+                            </ul>
+                            <div class="suppliers">Cisco, Arista</div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">10</div>
+                        <div class="step-title">InfiniBand Network</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>400-800 Gbps links</li>
+                                <li>Direct GPU memory access</li>
+                                <li>Real-time synchronization</li>
+                            </ul>
+                            <div class="suppliers">NVIDIA/Mellanox</div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">11</div>
+                        <div class="step-title">Fiber Optic Cables</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>Terabit-capacity glass fiber</li>
+                                <li>Connect all racks</li>
+                                <li>Redundant paths</li>
+                            </ul>
+                            <div class="suppliers">Corning</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase 4: Facility Construction -->
+            <div class="phase">
+                <div class="phase-header">
+                    <div class="phase-title">Phase 4: Facility Construction</div>
+                </div>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">12</div>
+                        <div class="step-title">Specialized Building</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>200 lbs/sq ft floor capacity</li>
+                                <li>2-foot raised floors</li>
+                                <li>Seismic resistance</li>
+                                <li>No windows, thermal control</li>
+                            </ul>
+                            <div class="suppliers">DPR, Turner</div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">13</div>
+                        <div class="step-title">Site Requirements</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>200+ MW power availability</li>
+                                <li>5M gallons/day water</li>
+                                <li>Multiple fiber paths</li>
+                                <li>Stable, cool climate</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase 5: Cooling Systems -->
+            <div class="phase">
+                <div class="phase-header">
+                    <div class="phase-title">Phase 5: Cooling Systems</div>
+                </div>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">14</div>
+                        <div class="step-title">Air Cooling (CRAC)</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>200-500 KW per unit</li>
+                                <li>Raised floor circulation</li>
+                                <li>Hot aisle capture</li>
+                            </ul>
+                            <div class="suppliers">Trane, Carrier</div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">15</div>
+                        <div class="step-title">Liquid Cooling</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>Direct GPU cold plates</li>
+                                <li>3,500x better than air</li>
+                                <li>30-50% energy reduction</li>
+                            </ul>
+                            <div class="suppliers">Vertiv, Asetek</div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">16</div>
+                        <div class="step-title">Cooling Towers</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>5M+ gallons evaporation/day</li>
+                                <li>100+ MW heat rejection</li>
+                                <li>Giant fans and spray systems</li>
+                            </ul>
+                            <div class="suppliers">Baltimore Aircoil, SPX</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase 6: Power Infrastructure -->
+            <div class="phase">
+                <div class="phase-header">
+                    <div class="phase-title">Phase 6: Power Infrastructure</div>
+                </div>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">17</div>
+                        <div class="step-title">Grid Connection</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>200+ MW capacity secured</li>
+                                <li>High-voltage transmission</li>
+                                <li>Utility infrastructure upgrade</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">18</div>
+                        <div class="step-title">Transformers</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>500kV → 480V step-down</li>
+                                <li>100+ MW handling</li>
+                                <li>Container-sized units</li>
+                            </ul>
+                            <div class="suppliers">ABB, Siemens</div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">19</div>
+                        <div class="step-title">Switchgear</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>Massive circuit breakers</li>
+                                <li>Fault isolation system</li>
+                                <li>Redundant power routing</li>
+                            </ul>
+                            <div class="suppliers">Schneider Electric, Eaton</div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">20</div>
+                        <div class="step-title">UPS Battery Systems</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>Room-sized battery banks</li>
+                                <li>2-4ms switching time</li>
+                                <li>10-15 second bridge power</li>
+                            </ul>
+                            <div class="suppliers">Vertiv, Eaton</div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">21</div>
+                        <div class="step-title">Backup Generators</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>10 second startup</li>
+                                <li>Days of runtime capability</li>
+                                <li>N+1 redundancy</li>
+                            </ul>
+                            <div class="suppliers">Caterpillar, Cummins</div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">22</div>
+                        <div class="step-title">Battery Storage</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>200+ MWh Tesla Megapacks</li>
+                                <li>Off-peak energy storage</li>
+                                <li>30+ minute backup</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">23</div>
+                        <div class="step-title">Power Distribution (PDUs)</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>Rack-level distribution</li>
+                                <li>Real-time monitoring</li>
+                                <li>Remote power cycling</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase 7: Safety & Security -->
+            <div class="phase">
+                <div class="phase-header">
+                    <div class="phase-title">Phase 7: Safety & Security</div>
+                </div>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">24</div>
+                        <div class="step-title">Fire Suppression</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>Smoke detectors throughout</li>
+                                <li>Pre-action sprinklers</li>
+                                <li>Clean agent gas (FM-200)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">25</div>
+                        <div class="step-title">Physical Security</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>24/7 security guards</li>
+                                <li>Biometric access control</li>
+                                <li>Mantraps and surveillance</li>
+                                <li>Secure perimeter</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase 8: Software & Management -->
+            <div class="phase">
+                <div class="phase-header">
+                    <div class="phase-title">Phase 8: Software & Management</div>
+                </div>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">26</div>
+                        <div class="step-title">DCIM Software</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>Temperature monitoring</li>
+                                <li>Power usage tracking</li>
+                                <li>Failure prediction</li>
+                                <li>Cooling optimization</li>
+                            </ul>
+                            <div class="suppliers">Schneider EcoStruxure, Vertiv Trellis</div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">27</div>
+                        <div class="step-title">Orchestration Systems</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>Kubernetes workload management</li>
+                                <li>40,000 GPU allocation</li>
+                                <li>Job queue optimization</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">28</div>
+                        <div class="step-title">AI Software Stack</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>NVIDIA CUDA</li>
+                                <li>PyTorch and TensorFlow</li>
+                                <li>Distributed training</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">29</div>
+                        <div class="step-title">Monitoring Systems</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>Track 100,000 components</li>
+                                <li>Proactive alerting</li>
+                                <li>Performance visualization</li>
+                            </ul>
+                            <div class="suppliers">Datadog, Prometheus</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div class="stats-section">
+            <div class="stats-title">📊 Project Overview</div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">$3-5B</div>
+                    <div class="stat-label">Total Investment</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">3-4</div>
+                    <div class="stat-label">Years to Build</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">200+ MW</div>
+                    <div class="stat-label">Power Consumption</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">40,000</div>
+                    <div class="stat-label">GPUs Deployed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">$150M</div>
+                    <div class="stat-label">Annual Operating Cost</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">5M</div>
+                    <div class="stat-label">Gallons Water/Day</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
